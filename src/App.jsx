@@ -7,13 +7,12 @@ import './styles/App.css'
 function App() {
   // Use initialEmails for state
   const [emails, setEmails] = useState(initialEmails);
+  const [hideRead, setHideRead] = useState(false);
 
   const toggleRead = (targetEmailId) => {
     setEmails((prevEmails) =>
       prevEmails.map((email) =>
-        email.id === targetEmailId
-          ? { ...email, read: !email.read } // Toggle read status
-          : email
+        email.id === targetEmailId ? { ...email, read: !email.read } : email
       )
     );
   };
@@ -21,11 +20,13 @@ function App() {
   const toggleStar = (targetEmailId) => {
     setEmails((prevEmails) =>
       prevEmails.map((email) =>
-        email.id === targetEmailId
-          ? { ...email, starred: !email.starred } // Toggle starred status
-          : email
+        email.id === targetEmailId ? { ...email, starred: !email.starred } : email
       )
     );
+  };
+  
+  const getReadEmails = (emails) => {
+    return hideRead ? emails.filter((email) => !email.read) : emails;
   };
 
   return (
@@ -53,8 +54,8 @@ function App() {
             <input
               id="hide-read"
               type="checkbox"
-              checked={false}
-              // onChange={() => {}}
+              checked={hideRead}
+              onChange={() => setHideRead(!hideRead)}
             />
           </li>
         </ul>
@@ -62,7 +63,7 @@ function App() {
       <main className="emails">
       <ul>
           {/* Mapping through the emails array and rendering each email */}
-          {emails.map((email) => (
+          {getReadEmails(emails).map((email) => (
             <li
               key={email.id}
               className={`email ${email.read ? 'read' : 'unread'}`}
